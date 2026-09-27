@@ -75,3 +75,23 @@ and not one level down in a subfolder, which is the single most common mistake.
 knowledge of the XRAY PROJECT server extension, assembled from the public
 Clear Sky multiplayer modding scene. No server configuration, no player data,
 no credentials of any kind are in this repo — just the mechanics.
+
+## Advanced example: the loyalty/loot plugin
+
+ +  — a sanitized copy of the
+live server's actual loot plugin: a priority-ordered list of player roles, each with its own
+armor-tier odds and bonus items, plus a faction-name detector. Same dispatch logic and odds as
+production; every real nickname replaced with a placeholder. The spec walks through the whole
+thing, including a couple of open questions about the balance and one latent array-bounds limit
+that's worth knowing about before raising the player cap.
+
+### A gotcha specific to building on Linux, not covered above
+
+Native Linux  (the  apt package, no wine needed) resolves nested 
+directives from the vendor's  chain relative to the **top-level source file's own
+directory**, not relative to each include file's own location — and the vendor's include tree
+uses lowercase paths () for files that are actually uppercase on disk
+(). On Windows this is invisible (NTFS/FAT are case-insensitive); on Linux it
+just fails with file not found. Symlinking the needed subfolders (, ,
+) next to your , with lowercase-aliased filenames pointing at the real
+uppercase ones, is the workaround used to build both examples in this repo.

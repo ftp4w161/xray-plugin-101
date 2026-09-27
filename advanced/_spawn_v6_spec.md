@@ -123,3 +123,22 @@ Not changed, on your instruction: the `was_alive[50]`/no-cap behavior, the `.add
 stop, the patrony/regular_tg odds asymmetry, all the "[UNCONFIRMED]" items, and every roll table
 and bonus-item rule. Compiled and verified as a valid PE32 DLL (`fasm`, native Linux build,
 `5 passes, 8192 bytes`) before publishing.
+
+## 7. A second file exists —  — and it is NOT what's used here
+
+ (elsewhere in the source tree, not shipped in
+this repo) adds nine extra AC-exported functions (, ,
+, etc.) to the API table, but its  struct has a different field set and
+order than the  used here — meaning the two files disagree on the memory offset of
+every struct field. Only one of them can match the live  layout.
+
+Two things point at  (this repo's version) being the one actually in use:
+ — a plugin whose only job is empirically logging every  field
+at runtime — references exactly this file's field set, not the extended one's. And the one
+live plugin that genuinely needs an AC function outside the shared table
+(, calling ) doesn't switch to the extended header
+at all — it loads that one function itself, separately, via its own  call,
+with an explicit NOT FOUND, skipped fallback if it's missing. That's the established pattern
+in this codebase for a function the shared table doesn't have: add it locally to the one
+plugin that needs it, not replace the shared struct definition everyone else already depends
+on.

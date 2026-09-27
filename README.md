@@ -68,17 +68,9 @@ plugin's own startup line (`- [welcome] welcome_v1 loaded...`) in DebugView,
 it didn't load — check that the `.plugin` file is actually sitting in `bin/`
 and not one level down in a subfolder, which is the single most common mistake.
 
-## License / provenance
-
-`kglobals.inc`'s `iglobal`/`uglobal` macros are © KolibriOS team 2004–2007, GPL.
-`xrproc.inc`'s API table and struct layout are community-reverse-engineered
-knowledge of the XRAY PROJECT server extension, assembled from the public
-Clear Sky multiplayer modding scene. No server configuration, no player data,
-no credentials of any kind are in this repo — just the mechanics.
-
 ## Advanced example: the loyalty/loot plugin
 
- +  — a sanitized copy of the
+`advanced/_spawn_v6_sanitized.asm` + `advanced/_spawn_v6_spec.md` — a sanitized copy of the
 live server's actual loot plugin: a priority-ordered list of player roles, each with its own
 armor-tier odds and bonus items, plus a faction-name detector. Same dispatch logic and odds as
 production; every real nickname replaced with a placeholder. The spec walks through the whole
@@ -87,11 +79,19 @@ that's worth knowing about before raising the player cap.
 
 ### A gotcha specific to building on Linux, not covered above
 
-Native Linux  (the  apt package, no wine needed) resolves nested 
-directives from the vendor's  chain relative to the **top-level source file's own
+Native Linux `fasm` (the `fasm` apt package, no wine needed) resolves nested `include`
+directives from the vendor's `WIN32AX.INC` chain relative to the **top-level source file's own
 directory**, not relative to each include file's own location — and the vendor's include tree
-uses lowercase paths () for files that are actually uppercase on disk
-(). On Windows this is invisible (NTFS/FAT are case-insensitive); on Linux it
-just fails with file not found. Symlinking the needed subfolders (, ,
-) next to your , with lowercase-aliased filenames pointing at the real
+uses lowercase paths (`macro/struct.inc`) for files that are actually uppercase on disk
+(`MACRO/STRUCT.INC`). On Windows this is invisible (NTFS/FAT are case-insensitive); on Linux it
+just fails with "file not found." Symlinking the needed subfolders (`macro/`, `api/`,
+`equates/`) next to your `.asm`, with lowercase-aliased filenames pointing at the real
 uppercase ones, is the workaround used to build both examples in this repo.
+
+## License / provenance
+
+`kglobals.inc`'s `iglobal`/`uglobal` macros are © KolibriOS team 2004–2007, GPL.
+`xrproc.inc`'s API table and struct layout are community-reverse-engineered
+knowledge of the XRAY PROJECT server extension, assembled from the public
+Clear Sky multiplayer modding scene. No server configuration, no player data,
+no credentials of any kind are in this repo — just the mechanics.
